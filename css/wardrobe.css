@@ -1,0 +1,380 @@
+/* css/wardrobe.css */
+
+/* Variables estéticas heredadas de Mundo de Campeones */
+:root {
+  --azul-oscuro: #0d1b4b;
+  --azul-medio: #1a3a8f;
+  --azul-claro: #2e6cc7;
+  --azul-brillante: #4891e0;
+  --amarillo: #FFD700;
+  --amarillo-osc: #e6be00;
+  --blanco: #f8f9ff;
+  --gris-oscuro: #111827;
+  --gris: #1e2a4a;
+  --borde: rgba(255,255,255,0.08);
+  --muted: rgba(255,255,255,0.5);
+  --wa: #25D366;
+  --wa-d: #1da851;
+  --r: 14px;
+  --rl: 20px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--azul-oscuro);
+  color: var(--blanco);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Tipografía Estilo Nike/F1 de la landing principal */
+.display-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.highlight {
+  color: var(--amarillo);
+}
+
+/* LAYOUT PRINCIPAL SPLIT-SCREEN (Responsivo) */
+.wardrobe-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+@media (max-width: 900px) {
+  .wardrobe-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   COLUMNA IZQUIERDA: CANVAS DEL AVATAR (COMPACTO Y ARREGLADO)
+   ========================================================================== */
+.canvas-section {
+  position: relative;
+  background: #020818;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem; /* Reducido para ganar espacio */
+  border-right: 1px solid var(--borde);
+  height: 100vh;   /* Forzamos a que ocupe exactamente la pantalla visible */
+  overflow: hidden;
+}
+
+/* El lienzo contenedor ahora es responsivo en altura también */
+.avatar-canvas {
+  position: relative;
+  width: 100%;
+  max-width: 260px;       /* Un poco más esbelto para pantallas medianas */
+  max-height: 80vh;       /* Restricción clave: nunca superará el 65% de la altura de la pantalla */
+  aspect-ratio: 376 / 1024;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 20px 50px rgba(0,0,0,0.6));
+}
+
+/* Capas de prendas (Por defecto ocultas) */
+.canvas-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Capa Exclusiva del Cuerpo Base: ¡SIEMPRE VISIBLE DESDE EL INICIO! */
+.canvas-layer.layer-base {
+  opacity: 1 !important;
+  visibility: visible !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+/* Control de visibilidad para prendas equipadas */
+.canvas-layer.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Orden de profundidad */
+.layer-top { z-index: 20; }    /* Ropa superior atrás */
+.layer-bottom { z-index: 30; } /* Ropa inferior adelante */
+.layer-shoes { z-index: 40; }  /* Zapatos al frente de todo */
+
+/* ==========================================================================
+   PESTAÑAS DE CATEGORÍAS (SIN BARRAS DE SCROLL MOLESTAS)
+   ========================================================================== */
+.category-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--borde);
+  padding-bottom: 12px; /* Espacio controlado para la línea amarilla */
+  overflow-x: auto;
+  scrollbar-width: none; /* Oculta barra en Firefox */
+}
+
+/* Oculta barra de scroll en Chrome, Safari y Edge */
+.category-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem; /* Un tris más pequeño para asegurar que quepa */
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s;
+  position: relative;
+}
+
+.tab-btn:hover, .tab-btn.active {
+  color: var(--amarillo);
+}
+
+/* Ajuste de la barra indicadora para que no rompa la caja del contenedor */
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -12px; /* Alineada exactamente sobre el borde del contenedor padre */
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--amarillo);
+}
+
+/* ==========================================================================
+   COLUMNA DERECHA: PANEL DE CONTROL (INTERFAZ DE USUARIO)
+   ========================================================================== */
+.controls-section {
+  background: var(--azul-oscuro);
+  padding: 3.5rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.panel-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.panel-subtitle {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* Selector de género escalable */
+.gender-selector {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.btn-gender {
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  color: var(--muted);
+  padding: 0.5rem 1.5rem;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-gender:hover, .btn-gender.active {
+  background: var(--blanco);
+  border-color: var(--blanco);
+  color: var(--azul-oscuro);
+}
+
+/* Pestañas de categorías */
+.category-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--borde);
+  padding-bottom: 0.75rem;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s;
+  position: relative;
+}
+
+.tab-btn:hover, .tab-btn.active {
+  color: var(--amarillo);
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -0.85rem;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--amarillo);
+}
+
+/* Grid de Armario */
+.wardrobe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+/* Tarjeta de Prenda */
+.clothing-card {
+  background: var(--gris);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  padding: 1rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.clothing-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255,215,0,0.2);
+}
+
+.clothing-card.active {
+  border-color: var(--amarillo);
+  background: linear-gradient(135deg, var(--gris), rgba(255,215,0,0.03));
+}
+
+.card-preview {
+  aspect-ratio: 1;
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  overflow: hidden;
+}
+
+.card-preview img {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.card-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--blanco);
+  line-height: 1.3;
+}
+
+.card-price {
+  font-size: 0.8rem;
+  color: var(--amarillo);
+  font-weight: 600;
+}
+
+/* Botón de acción WhatsApp */
+.btn-checkout {
+  position: relative;
+  z-index: 50;
+  background: var(--wa);
+  color: white;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 1rem 2.5rem;
+  border-radius: 100px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(37,211,102,0.3);
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  margin-top: 1.5rem;
+}
+
+.btn-checkout:hover {
+  background: var(--wa-d);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(37,211,102,0.45);
+}
+
+/* Cuando la tarjeta está suspendida en el aire siendo arrastrada */
+.clothing-card.dragging {
+  opacity: 0.4;
+  border-color: var(--amarillo);
+  transform: scale(0.95);
+  cursor: grabbing;
+}
+
+/* El Canvas reacciona cuando una prenda vuela sobre él */
+.avatar-canvas.drag-over {
+  transform: scale(1.03); /* El avatar se acerca sutilmente al usuario */
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.25); /* Aura dorada premium */
+  border-radius: var(--rl);
+  outline: 2px dashed var(--amarillo);
+  outline-offset: 10px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ANIMACIÓN: Elástico Snapping al "vestirse" */
+@keyframes popImpact {
+  0% {
+    transform: scale(0.92);
+    filter: brightness(1.8) drop-shadow(0 0 15px var(--azul-brillante));
+    opacity: 0.5;
+  }
+  70% {
+    transform: scale(1.04); /* Rebote de estiramiento */
+    filter: brightness(1.2);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1) drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+    opacity: 1;
+  }
+}
